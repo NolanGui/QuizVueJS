@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { useScoreStore } from '@/stores/quizStore';
+import { useScoreStore } from '../stores/quizStore.js';
 
 export default {
   name: 'ScoresPage',
