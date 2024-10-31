@@ -15,25 +15,21 @@
 </template>
 
 <script>
+import { useScoreStore } from '@/stores/quizStore';
+
 export default {
   name: 'ScoresPage',
-  data() {
+  setup() {
+    const scoreStore = useScoreStore();
     return {
-      scores: [],
+      scores: scoreStore.scores,
+      goHome: () => {
+        this.$router.push('/');
+      },
+      resetScores: () => {
+        scoreStore.resetScores();
+      },
     };
-  },
-  created() {
-    const savedScores = JSON.parse(localStorage.getItem('quizScores')) || [];
-    this.scores = savedScores;
-  },
-  methods: {
-    goHome() {
-      this.$router.push('/');
-    },
-    resetScores() {
-      localStorage.removeItem('quizScores');
-      this.scores = [];
-    },
   },
 };
 </script>
