@@ -19,12 +19,15 @@
           v-for="(option, index) in currentQuestion.options"
           :key="index"
           class="option"
-          :class="{ disabled: isOptionSelected && selectedOption === option }"
+          :class="{
+            disabled: isOptionSelected,
+            correct: isOptionSelected && option === currentQuestion.correctAnswer,
+            incorrect: isOptionSelected && option === selectedOption && option !== currentQuestion.correctAnswer
+          }"
           @click="selectOption(option)"
         >
           {{ option }}
         </div>
-
       </div>
       <button @click="nextQuestion" class="next-button" :disabled="!selectedOption">Suivant</button>
       <p v-if="feedback" class="feedback">{{ feedback }}</p>
@@ -216,7 +219,6 @@ export default {
 
 .option.disabled {
   pointer-events: none; 
-  background-color: #ccc; 
 }
 
 .option:hover {
@@ -276,5 +278,16 @@ export default {
   transform: translate(-50%, -50%);
   font-size: 1.2em;
   color: #333;
+}
+.option.correct {
+  background-color: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+}
+
+.option.incorrect {
+  background-color: #f8d7da;
+  border-color: #dc3545;
+  color: #721c24;
 }
 </style>
