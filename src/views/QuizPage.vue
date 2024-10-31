@@ -59,12 +59,11 @@ export default {
       feedback: '',
       isFinished: false,
       timer: 20,
-      
       initialTime: 20,
       timerInterval: null,
-      loading: true,
       goodStreak: 0,
       badStreak: 0,
+      bestStreak: 0,
       isOptionSelected: false,
     };
   },
@@ -100,7 +99,7 @@ export default {
         const response = await fetch(
           `https://opentdb.com/api.php?amount=10&type=multiple&difficulty=${difficulty}&category=${category}`
         );
-        const data = await response.json(); 
+        const data = await response.json();
         this.questions = data.results.map((item) => ({
           question: item.question,
           options: [...item.incorrect_answers, item.correct_answer].sort(() => Math.random() - 0.5),
@@ -120,6 +119,10 @@ export default {
           this.score++;
           this.goodStreak++;
           this.badStreak = 0;
+
+          if (this.goodStreak > this.bestStreak) {
+            this.bestStreak = this.goodStreak;
+          }
         } else {
           this.feedback = 'Incorrect ! 😢';
           this.badStreak++;
@@ -145,41 +148,37 @@ export default {
       this.startTimer();
     },
     nextQuestion() {
-    this.selectedOption = null;
-    this.feedback = '';
-    this.isOptionSelected = false; 
-    this.currentQuestionIndex++;
+      this.selectedOption = null;
+      this.feedback = '';
+      this.isOptionSelected = false;
+      this.currentQuestionIndex++;
 
-    if (this.currentQuestionIndex >= this.questions.length) {
-      this.isFinished = true;
-      this.saveScore(); 
-    } else {
-      this.resetTimer();
-    }
-  },
-  
-  saveScore() {
-    const currentScore = {
-    points: this.score,
-    bestStreak: 1,
-  };
-  if (this.goodStreak > 0) {
-    currentScore.bestStreak = this.goodStreak;
-  }
+      if (this.currentQuestionIndex >= this.questions.length) {
+        this.isFinished = true;
+        this.saveScore();
+      } else {
+        this.resetTimer();
+      }
+    },
+    saveScore() {
+      const currentScore = {
+        points: this.score,
+        bestStreak: this.bestStreak,
+      };
 
-    const scores = JSON.parse(localStorage.getItem('quizScores')) || [];
-    scores.push(currentScore);
-    localStorage.setItem('quizScores', JSON.stringify(scores));
-  },
-
-  restartQuiz() {
-    this.currentQuestionIndex = 0;
-    this.score = 0;
-    this.isFinished = false;
-    this.goodStreak = 0;
-    this.badStreak = 0;
-    this.fetchQuestions();
-  },
+      const scores = JSON.parse(localStorage.getItem('quizScores')) || [];
+      scores.push(currentScore);
+      localStorage.setItem('quizScores', JSON.stringify(scores));
+    },
+    restartQuiz() {
+      this.currentQuestionIndex = 0;
+      this.score = 0;
+      this.isFinished = false;
+      this.goodStreak = 0;
+      this.badStreak = 0;
+      this.bestStreak = 0;
+      this.fetchQuestions();
+    },
   },
 };
 </script>
