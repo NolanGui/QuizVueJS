@@ -5,12 +5,10 @@ export const useScoreStore = defineStore('score', {
       scores: JSON.parse(localStorage.getItem('quizScores')) || [],
     }),
     actions: {
-      // Ajouter un score à la liste des scores
       addScore(score) {
         this.scores.push(score);
         localStorage.setItem('quizScores', JSON.stringify(this.scores));
       },
-      // Réinitialiser les scores
       resetScores() {
         this.scores = [];
         localStorage.removeItem('quizScores');
